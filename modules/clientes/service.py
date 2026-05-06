@@ -1,4 +1,4 @@
-﻿from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session
 from . import repository
 
 
@@ -15,3 +15,8 @@ def listar_clientes(db: Session):
 def obter_cliente(db: Session, cliente_id: int):
     """Retorna um cliente pelo ID."""
     return repository.obter_cliente(db, cliente_id)
+
+# Função para obter um cliente pelo ID
+def obter_cliente(db: Session, cliente_id: int):
+    """Obtém um cliente pelo ID."""
+    return db.query(repository.Cliente).filter(repository.Cliente.id == cliente_id).first()
