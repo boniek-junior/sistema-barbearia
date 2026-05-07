@@ -7,3 +7,6 @@ api_router = APIRouter()
 
 # Incluindo os roteadores dos módulos de clientes.
 api_router.include_router(clientes_router, prefix="/clientes", tags=["clientes"])
+
+# Incluindo os roteadores dos módulos de agendamentos.
+api_router.include_router(agendamentos_router, prefix="/agendamentos", tags=["agendamentos"])
