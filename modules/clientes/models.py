@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String
+from sqlalchemy.orm import relationship
 from core.database import Base
 
 # Modelo de Cliente para o SQLAlchemy
@@ -10,3 +11,5 @@ class Cliente(Base):
     nome = Column(String, index=True)
     email = Column(String, unique=True, index=True)
     telefone = Column(String, index=True)
+
+    agendamentos = relationship("Agendamento", back_populates="cliente")
