@@ -3,10 +3,10 @@ from .models import Cliente
 
 
 # Função para criar um novo cliente no banco de dados
-def criar_cliente(db: Session, nome: str, email: str, telefone: str) -> Cliente:
+def criar_cliente(db: Session, nome: str, telefone: str) -> Cliente:
     """Insere um novo cliente no banco de dados."""
 
-    cliente = Cliente(nome=nome, email=email, telefone=telefone)
+    cliente = Cliente(nome=nome, telefone=telefone)
     db.add(cliente)
     db.commit()
     db.refresh(cliente)
@@ -21,3 +21,19 @@ def listar_clientes(db: Session) -> list[Cliente]:
 def obter_cliente(db: Session, cliente_id: int) -> Cliente | None:
     """Busca um cliente pelo ID."""
     return db.query(Cliente).filter(Cliente.id == cliente_id).first()
+
+# Função para atualizar os dados de um cliente existente
+def atualizar_cliente(db: Session, cliente: Cliente, dados: dict) -> Cliente:
+    """Atualiza os dados de um cliente existente."""
+    for campo, valor in dados.items():
+        if valor is not None:
+            setattr(cliente, campo, valor)
+    db.commit()
+    db.refresh(cliente)
+    return cliente
+
+# Função para deletar um cliente do banco de dados
+def deletar_cliente(db: Session, cliente: Cliente) -> None:
+    """Remove um cliente do banco de dados."""
+    db.delete(cliente)
+    db.commit()
