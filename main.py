@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from core.database import Base, engine
 from api.router import api_router
 
@@ -7,6 +8,15 @@ app = FastAPI(
     title="Barbearia API",
     description="API para gerenciamento de clientes e agendamentos.",
     version="1.0.0",
+)
+
+# Configuração de CORS para permitir o frontend React se comunicar com a API
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Em produção, trocar pelo domínio do frontend
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Incluindo o roteador da API
