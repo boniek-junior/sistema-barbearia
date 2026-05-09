@@ -40,6 +40,4 @@ class ClienteResponse(ClienteBase):
     """Estrutura de resposta de cliente."""
     id: int
 
-# Configuração para permitir a conversão de objetos ORM para modelos Pydantic
-    class Config:
-        model_config = {"from_attributes": True}
+    model_config = {"from_attributes": True}

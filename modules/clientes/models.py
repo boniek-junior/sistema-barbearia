@@ -1,5 +1,4 @@
-from sqlalchemy import Column, Integer, String
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, Mapped, mapped_column
 from core.database import Base
 
 # Modelo de Cliente para o SQLAlchemy
@@ -7,9 +6,9 @@ class Cliente(Base):
     __tablename__ = "clientes"
 
     # Campos da tabela de clientes
-    id = Column(Integer, primary_key=True, index=True)
-    nome = Column(String, index=True)
-    telefone = Column(String, index=True)
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    nome: Mapped[str] = mapped_column(index=True)
+    telefone: Mapped[str] = mapped_column(index=True)
 
     # Relacionamento com a tabela de agendamentos
     agendamentos = relationship("Agendamento", back_populates="cliente")
