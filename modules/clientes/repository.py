@@ -23,6 +23,11 @@ def obter_cliente(db: Session, cliente_id: int) -> Cliente | None:
     """Busca um cliente pelo ID."""
     return db.query(Cliente).filter(Cliente.id == cliente_id).first()
 
+# Função para obter um cliente pelo telefone
+def obter_cliente_por_telefone(db: Session, telefone: str) -> Cliente | None:
+    """Busca um cliente pelo telefone."""
+    return db.query(Cliente).filter(Cliente.telefone == telefone).first()
+
 # Função para atualizar os dados de um cliente existente
 def atualizar_cliente(db: Session, cliente: Cliente, dados: dict) -> Cliente:
     """Atualiza os dados de um cliente existente."""
