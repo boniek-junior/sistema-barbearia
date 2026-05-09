@@ -8,6 +8,7 @@ from .schemas import AgendamentoCreate
 from .repository import AgendamentoRepository
 from .servicos_enum import TipoServico
 from .status_enum import StatusAgendamento
+from modules.clientes.repository import obter_cliente
 
 
 class AgendamentoService:
@@ -54,6 +55,13 @@ class AgendamentoService:
      
 
     def criar_agendamento(self, db: Session, dados: AgendamentoCreate) -> Agendamento:
+
+        cliente = obter_cliente(db, dados.cliente_id)
+        if not cliente:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Cliente não encontrado."
+            )
 
         agora = datetime.now(dados.inicio.tzinfo) if dados.inicio.tzinfo else datetime.now()
         if dados.inicio < agora:
