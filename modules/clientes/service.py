@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from fastapi import HTTPException
 from . import repository
 
 # Serviços para criar clientes
@@ -30,5 +31,11 @@ def deletar_cliente(db: Session, cliente_id: int):
     cliente = repository.obter_cliente(db, cliente_id)
     if cliente is None:
         return False
-    repository.deletar_cliente(db, cliente)
+    
+    sucesso = repository.deletar_cliente(db, cliente)
+    if not sucesso:
+        raise HTTPException(
+            status_code=400,
+            detail="Não é possível excluir o cliente pois ele possui agendamentos vinculados."
+        )
     return True

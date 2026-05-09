@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
 from .models import Cliente
 
 
@@ -33,7 +34,12 @@ def atualizar_cliente(db: Session, cliente: Cliente, dados: dict) -> Cliente:
     return cliente
 
 # Função para deletar um cliente do banco de dados
-def deletar_cliente(db: Session, cliente: Cliente) -> None:
+def deletar_cliente(db: Session, cliente: Cliente) -> bool:
     """Remove um cliente do banco de dados."""
     db.delete(cliente)
-    db.commit()
+    try:
+        db.commit()
+        return True
+    except IntegrityError:
+        db.rollback()
+        return False
