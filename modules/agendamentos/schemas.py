@@ -2,6 +2,7 @@ from pydantic import BaseModel, field_validator
 from datetime import datetime
 from .status_enum import StatusAgendamento
 from .servicos_enum import TipoServico
+from modules.clientes.schemas import ClienteResponse
 
 class AgendamentoCreate(BaseModel):
     cliente_id: int
@@ -26,5 +27,6 @@ class AgendamentoResponse(BaseModel):
     inicio: datetime
     fim: datetime
     status: StatusAgendamento
+    cliente: ClienteResponse
 
     model_config = {"from_attributes": True}
