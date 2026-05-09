@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from core.database import get_db
 from . import schemas, service
@@ -44,17 +44,10 @@ def atualizar_cliente(
     return cliente_atualizado
 
 # Rota para deletar um cliente
-@router.delete("/{cliente_id}", response_model=schemas.ClienteResponse)
+@router.delete("/{cliente_id}", status_code=status.HTTP_204_NO_CONTENT)
 def deletar_cliente(
     cliente_id: int,
     db: Session = Depends(get_db),
 ):
     """Deleta um cliente do banco de dados."""
-    cliente_deletado = service.deletar_cliente(db, cliente_id)
-    if not cliente_deletado:
-        raise HTTPException(status_code=404, detail="Cliente não encontrado")
-    return schemas.ClienteResponse(
-        id=cliente_id,
-        nome="Cliente excluído",
-        telefone="Telefone excluído"
-    )
+    return service.deletar_cliente(db, cliente_id)

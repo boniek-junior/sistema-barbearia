@@ -41,5 +41,5 @@ class ClienteResponse(ClienteBase):
     id: int
 
 # Configuração para permitir a conversão de objetos ORM para modelos Pydantic
-class Config:
-    orm_mode = True
+    class Config:
+        model_config = {"from_attributes": True}
