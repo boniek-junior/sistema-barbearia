@@ -12,4 +12,4 @@ class Cliente(Base):
     telefone = Column(String, index=True)
 
     # Relacionamento com a tabela de agendamentos
-    agendamento = relationship("Agendamento", back_populates="cliente")
+    agendamentos = relationship("Agendamento", back_populates="cliente")
