@@ -25,8 +25,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Incluindo o roteador da API
-app.include_router(api_router, prefix="/api")
+# Incluindo o roteador da API na raiz para manter os endpoints esperados pelo frontend.
+app.include_router(api_router)
 
 # Evento de inicialização para criar as tabelas do banco de dados
 @app.on_event("startup")

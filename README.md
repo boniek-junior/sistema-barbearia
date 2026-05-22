@@ -47,6 +47,16 @@ uvicorn main:app --reload
 
 A aplicação ficará disponível em `http://127.0.0.1:8000`.
 
+### Em produção
+
+Para executar em produção é recomendado usar `gunicorn` com o worker do Uvicorn:
+
+```bash
+gunicorn -k uvicorn.workers.UvicornWorker main:app --bind 0.0.0.0:$PORT --workers 2
+```
+
+Adicione `gunicorn` ao `requirements.txt` (já incluso) e considere usar um `Procfile` ou `render.yaml` para a plataforma de deploy.
+
 ## Endpoints
 
 - `POST /clientes/` - cria um cliente.
