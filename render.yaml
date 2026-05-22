@@ -1,7 +1,16 @@
+databases:
+  - name: sistema-barbearia-db
+    region: oregon
+    plan: free
+    disk: 512
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+
 services:
 	- type: web
-		name: sistema-barbearia-backend
-		env: python
+		name: sistema-barbearia-backend]
+    runtime: python
 		plan: free
 		region: oregon
 		branch: main
