@@ -1,31 +1,25 @@
 databases:
-  - name: sistema-barbearia-db
-    region: oregon
-    plan: free
-    disk: 512
-    envVars:
-      - key: DATABASE_URL
-        sync: false
+	- name: sistema-barbearia-db
+		region: oregon
+		plan: starter
+		disk: 512
 
 services:
 	- type: web
-		name: sistema-barbearia-backend]
-    runtime: python
-		plan: free
+		name: sistema-barbearia-backend
+		env: python
+		plan: starter
 		region: oregon
-		branch: main
+		branch: prod
 		buildCommand: pip install -r requirements.txt
-		startCommand: gunicorn -k uvicorn.workers.UvicornWorker main:app --bind 0.0.0.0:$PORT --workers 2
+		# Use python -m gunicorn to avoid PATH issues that can cause exit code 127
+		startCommand: python -m gunicorn -k uvicorn.workers.UvicornWorker main:app --bind 0.0.0.0:$PORT --workers 2
 		envVars:
-			- key: DATABASE_URL
-				sync: false
 			- key: SECRET_KEY
 				sync: false
-		disk: 512
-		instanceType: starter
 		healthCheckPath: /health
 		autoDeploy: true
 
 # Notes:
 # - Render will use this file when creating the service from the repo.
-# - Ensure `gunicorn` is present in `requirements.txt` or change `startCommand` to `uvicorn main:app --host 0.0.0.0 --port $PORT`.
+# - After creating the managed DB in Render, set DATABASE_URL in the Service Environment variables.
