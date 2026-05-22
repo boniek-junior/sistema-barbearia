@@ -34,6 +34,12 @@ def on_startup() -> None:
     """Cria as tabelas do banco de dados ao iniciar a aplicação."""
     Base.metadata.create_all(bind=engine)
 
+
+@app.get("/health")
+def health_check():
+    """Health check endpoint used by platforms to validate the service is up."""
+    return {"status": "ok"}
+
 # Configuração para servir o Frontend Estático
 if hasattr(sys, '_MEIPASS'):
     # Executando no PyInstaller bundle
