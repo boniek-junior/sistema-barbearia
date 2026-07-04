@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from core.database import get_db
 from . import schemas, service
+import re
 
 # Roteador para as rotas de clientes
 router = APIRouter()

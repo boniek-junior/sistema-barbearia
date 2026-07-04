@@ -3,6 +3,7 @@ from typing import Optional
 from datetime import datetime
 from sqlalchemy.orm import Session
 from core.database import get_db
+from core.security import obter_usuario_atual
 from . import schemas, service
 
 router = APIRouter()
@@ -11,7 +12,8 @@ router = APIRouter()
 def criar_agendamento(
     agendamento: schemas.AgendamentoCreate,
     db: Session = Depends(get_db),
-    svc: service.AgendamentoService = Depends()
+    svc: service.AgendamentoService = Depends(),
+    usuario=Depends(obter_usuario_atual),
 ):
     """Cria um novo agendamento."""
     return svc.criar_agendamento(db, agendamento)
@@ -22,7 +24,8 @@ def listar_agendamentos(
     skip: int = Query(0, ge=0),
     limit: int = Query(100, le=1000),
     db: Session = Depends(get_db),
-    svc: service.AgendamentoService = Depends()
+    svc: service.AgendamentoService = Depends(),
+    usuario=Depends(obter_usuario_atual),
 ): 
     """Retorna agendamentos, opcionalmente filtrados por data e com paginação."""
     return svc.listar_agendamentos(db, data, skip, limit)
@@ -32,7 +35,8 @@ def listar_agendamentos(
 def buscar_agendamento(
     agendamento_id: int, 
     db: Session = Depends(get_db),
-    svc: service.AgendamentoService = Depends()
+    svc: service.AgendamentoService = Depends(),
+    usuario=Depends(obter_usuario_atual),
 ):
     """Busca um agendamento específico pelo ID."""
     return svc.buscar_por_id(db, agendamento_id)
@@ -42,7 +46,8 @@ def atualizar_status(
     agendamento_id: int, 
     atualizacao: schemas.AgendamentoUpdate, 
     db: Session = Depends(get_db),
-    svc: service.AgendamentoService = Depends()
+    svc: service.AgendamentoService = Depends(),
+    usuario=Depends(obter_usuario_atual),
 ):
     """Atualiza o status de um agendamento existente."""
     return svc.atualizar_status(db, agendamento_id, atualizacao.status)
@@ -51,7 +56,8 @@ def atualizar_status(
 def deletar_agendamento(
     agendamento_id: int, 
     db: Session = Depends(get_db),
-    svc: service.AgendamentoService = Depends()
+    svc: service.AgendamentoService = Depends(),
+    usuario=Depends(obter_usuario_atual),
 ):
     """Exclui um agendamento do banco de dados."""
     svc.deletar_agendamento(db, agendamento_id)
