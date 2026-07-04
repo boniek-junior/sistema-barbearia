@@ -14,7 +14,7 @@ class TipoServico(str, enum.Enum):
         return _DURACOES[self]
 
 _DURACOES = {
-    TipoServico.CORTE: 40,
+    TipoServico.CORTE: 30,
     TipoServico.BARBA: 30,
     TipoServico.CORTE_E_BARBA: 70,
     TipoServico.SOBRANCELHA: 20,
