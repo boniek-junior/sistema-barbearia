@@ -35,7 +35,7 @@ class UsuarioResponse(UsuarioBase):
 
 class Token(BaseModel):
     """Modelo para o token JWT retornado após o login."""
-    acesso_token: str
+    access_token: str
     token_type: str = "bearer"
 
     class Config:
