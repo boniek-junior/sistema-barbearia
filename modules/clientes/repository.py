@@ -3,32 +3,37 @@ from sqlalchemy.exc import IntegrityError
 from .models import Cliente
 
 
-# Função para criar um novo cliente no banco de dados
-def criar_cliente(db: Session, nome: str, telefone: str) -> Cliente:
-    """Insere um novo cliente no banco de dados."""
-
-    cliente = Cliente(nome=nome, telefone=telefone)
+# Funcao para criar um novo cliente no banco de dados
+def criar_cliente(db: Session, nome: str, telefone: str, usuario_id: int) -> Cliente:
+    """Insere um novo cliente no banco de dados, vinculado ao usuario dono."""
+    cliente = Cliente(nome=nome, telefone=telefone, usuario_id=usuario_id)
     db.add(cliente)
     db.commit()
     db.refresh(cliente)
     return cliente
 
-# Função para listar todos os clientes do banco de dados
-def listar_clientes(db: Session) -> list[Cliente]:
-    """Retorna todos os clientes cadastrados."""
-    return db.query(Cliente).all()
+# Funcao para listar todos os clientes de um usuario
+def listar_clientes(db: Session, usuario_id: int) -> list[Cliente]:
+    """Retorna os clientes cadastrados pelo usuario logado."""
+    return db.query(Cliente).filter(Cliente.usuario_id == usuario_id).all()
 
-# Função para obter um cliente pelo ID
-def obter_cliente(db: Session, cliente_id: int) -> Cliente | None:
-    """Busca um cliente pelo ID."""
-    return db.query(Cliente).filter(Cliente.id == cliente_id).first()
+# Funcao para obter um cliente pelo ID, restrito ao dono
+def obter_cliente(db: Session, cliente_id: int, usuario_id: int) -> Cliente | None:
+    """Busca um cliente pelo ID, apenas se pertencer ao usuario logado."""
+    return db.query(Cliente).filter(
+        Cliente.id == cliente_id,
+        Cliente.usuario_id == usuario_id
+    ).first()
 
-# Função para obter um cliente pelo telefone
-def obter_cliente_por_telefone(db: Session, telefone: str) -> Cliente | None:
-    """Busca um cliente pelo telefone."""
-    return db.query(Cliente).filter(Cliente.telefone == telefone).first()
+# Funcao para obter um cliente pelo telefone, restrito ao dono
+def obter_cliente_por_telefone(db: Session, telefone: str, usuario_id: int) -> Cliente | None:
+    """Busca um cliente pelo telefone, apenas entre os clientes do usuario logado."""
+    return db.query(Cliente).filter(
+        Cliente.telefone == telefone,
+        Cliente.usuario_id == usuario_id
+    ).first()
 
-# Função para atualizar os dados de um cliente existente
+# Funcao para atualizar os dados de um cliente existente
 def atualizar_cliente(db: Session, cliente: Cliente, dados: dict) -> Cliente:
     """Atualiza os dados de um cliente existente."""
     for campo, valor in dados.items():
@@ -38,7 +43,7 @@ def atualizar_cliente(db: Session, cliente: Cliente, dados: dict) -> Cliente:
     db.refresh(cliente)
     return cliente
 
-# Função para deletar um cliente do banco de dados
+# Funcao para deletar um cliente do banco de dados
 def deletar_cliente(db: Session, cliente: Cliente) -> bool:
     """Remove um cliente do banco de dados."""
     db.delete(cliente)

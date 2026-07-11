@@ -16,7 +16,7 @@ def criar_agendamento(
     usuario=Depends(obter_usuario_atual),
 ):
     """Cria um novo agendamento."""
-    return svc.criar_agendamento(db, agendamento)
+    return svc.criar_agendamento(db, agendamento, usuario.id)
 
 @router.get("/", response_model=list[schemas.AgendamentoResponse])
 def listar_agendamentos(
@@ -26,38 +26,37 @@ def listar_agendamentos(
     db: Session = Depends(get_db),
     svc: service.AgendamentoService = Depends(),
     usuario=Depends(obter_usuario_atual),
-): 
-    """Retorna agendamentos, opcionalmente filtrados por data e com paginação."""
-    return svc.listar_agendamentos(db, data, skip, limit)
-
+):
+    """Retorna agendamentos do usuario logado, opcionalmente filtrados por data e com paginacao."""
+    return svc.listar_agendamentos(db, usuario.id, data, skip, limit)
 
 @router.get("/{agendamento_id}", response_model=schemas.AgendamentoResponse)
 def buscar_agendamento(
-    agendamento_id: int, 
+    agendamento_id: int,
     db: Session = Depends(get_db),
     svc: service.AgendamentoService = Depends(),
     usuario=Depends(obter_usuario_atual),
 ):
-    """Busca um agendamento específico pelo ID."""
-    return svc.buscar_por_id(db, agendamento_id)
+    """Busca um agendamento especifico do usuario logado pelo ID."""
+    return svc.buscar_por_id(db, agendamento_id, usuario.id)
 
 @router.patch("/{agendamento_id}/status", response_model=schemas.AgendamentoResponse)
 def atualizar_status(
-    agendamento_id: int, 
-    atualizacao: schemas.AgendamentoUpdate, 
+    agendamento_id: int,
+    atualizacao: schemas.AgendamentoUpdate,
     db: Session = Depends(get_db),
     svc: service.AgendamentoService = Depends(),
     usuario=Depends(obter_usuario_atual),
 ):
-    """Atualiza o status de um agendamento existente."""
-    return svc.atualizar_status(db, agendamento_id, atualizacao.status)
+    """Atualiza o status de um agendamento existente do usuario logado."""
+    return svc.atualizar_status(db, agendamento_id, atualizacao.status, usuario.id)
 
 @router.delete("/{agendamento_id}", status_code=status.HTTP_204_NO_CONTENT)
 def deletar_agendamento(
-    agendamento_id: int, 
+    agendamento_id: int,
     db: Session = Depends(get_db),
     svc: service.AgendamentoService = Depends(),
     usuario=Depends(obter_usuario_atual),
 ):
-    """Exclui um agendamento do banco de dados."""
-    svc.deletar_agendamento(db, agendamento_id)
+    """Exclui um agendamento do usuario logado do banco de dados."""
+    svc.deletar_agendamento(db, agendamento_id, usuario.id)

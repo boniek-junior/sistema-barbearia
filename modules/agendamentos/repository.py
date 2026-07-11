@@ -4,15 +4,16 @@ from sqlalchemy.exc import SQLAlchemyError
 from datetime import datetime
 from .models import Agendamento
 from .status_enum import StatusAgendamento
+from modules.clientes.models import Cliente
 
 class AgendamentoRepository:
 
-    def buscar_conflito(self, db: Session, inicio: datetime, fim: datetime, ignorar_id: int = None) -> bool:
+    def buscar_conflito(self, db: Session, inicio: datetime, fim: datetime, usuario_id: int, ignorar_id: int = None) -> bool:
         """
-        Verifica se existe algum agendamento ativo que se sobrepõe ao intervalo pedido.
-        Fórmula: inicio_novo < fim_existente AND fim_novo > inicio_existente
+        Verifica se existe algum agendamento ativo do usuario logado que se sobrepoe ao intervalo pedido.
         """
-        query = db.query(Agendamento).filter(
+        query = db.query(Agendamento).join(Cliente).filter(
+            Cliente.usuario_id == usuario_id,
             and_(
                 Agendamento.inicio < fim,
                 Agendamento.fim > inicio,
@@ -34,19 +35,25 @@ class AgendamentoRepository:
             db.rollback()
             raise
 
-    def listar_por_data(self, db: Session, data: datetime, skip: int = 0, limit: int = 100) -> list[Agendamento]:
+    def listar_por_data(self, db: Session, data: datetime, usuario_id: int, skip: int = 0, limit: int = 100) -> list[Agendamento]:
         inicio_dia = data.replace(hour=0, minute=0, second=0, microsecond=0)
         fim_dia = data.replace(hour=23, minute=59, second=59, microsecond=999999)
-        return db.query(Agendamento).filter(
+        return db.query(Agendamento).join(Cliente).filter(
+            Cliente.usuario_id == usuario_id,
             Agendamento.inicio >= inicio_dia,
             Agendamento.inicio <= fim_dia
         ).offset(skip).limit(limit).all()
 
-    def listar_todos(self, db: Session, skip: int = 0, limit: int = 100) -> list[Agendamento]:
-        return db.query(Agendamento).offset(skip).limit(limit).all()
+    def listar_todos(self, db: Session, usuario_id: int, skip: int = 0, limit: int = 100) -> list[Agendamento]:
+        return db.query(Agendamento).join(Cliente).filter(
+            Cliente.usuario_id == usuario_id
+        ).offset(skip).limit(limit).all()
 
-    def buscar_por_id(self, db: Session, agendamento_id: int) -> Agendamento | None:
-        return db.query(Agendamento).filter(Agendamento.id == agendamento_id).first()
+    def buscar_por_id(self, db: Session, agendamento_id: int, usuario_id: int) -> Agendamento | None:
+        return db.query(Agendamento).join(Cliente).filter(
+            Agendamento.id == agendamento_id,
+            Cliente.usuario_id == usuario_id
+        ).first()
 
     def atualizar_status(self, db: Session, agendamento: Agendamento, novo_status: StatusAgendamento) -> Agendamento:
         agendamento.status = novo_status
