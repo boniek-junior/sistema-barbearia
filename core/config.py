@@ -11,7 +11,7 @@ class Settings(BaseSettings):
     DATABASE_URL: str = f"sqlite:///{BASE_DIR / 'barbearia.db'}"
 
     HORARIO_ABERTURA: int = 8
-    HORARIO_FECHAMENTO: int = 18
+    HORARIO_FECHAMENTO: int = 20
     DURACAO_PADRAO: int = 30
 
     # Configurações de autenticação
