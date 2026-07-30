@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status, Depends
 
@@ -55,7 +55,7 @@ class AgendamentoService:
                 detail="Cliente nao encontrado."
             )
 
-        agora = datetime.now(dados.inicio.tzinfo) if dados.inicio.tzinfo else datetime.now()
+        agora = datetime.now(dados.inicio.tzinfo) if dados.inicio.tzinfo else datetime.now(timezone(timedelta(hours=-3))).replace(tzinfo=None)
         if dados.inicio < agora:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,

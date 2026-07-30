@@ -15,7 +15,7 @@ class TipoServico(str, enum.Enum):
 
 _DURACOES = {
     TipoServico.CORTE: 30,
-    TipoServico.BARBA: 30,
+    TipoServico.BARBA: 15,
     TipoServico.CORTE_E_BARBA: 70,
     TipoServico.SOBRANCELHA: 20,
     TipoServico.PINTURA: 60,

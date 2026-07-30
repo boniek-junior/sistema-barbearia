@@ -1,5 +1,5 @@
 from pydantic import BaseModel, field_validator
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from .status_enum import StatusAgendamento
 from .servicos_enum import TipoServico
 from modules.clientes.schemas import ClienteResponse
@@ -12,7 +12,7 @@ class AgendamentoCreate(BaseModel):
     @field_validator("inicio")
     @classmethod
     def validar_data(cls, v: datetime):
-        agora = datetime.now(v.tzinfo) if v.tzinfo else datetime.now()
+        agora = datetime.now(v.tzinfo) if v.tzinfo else datetime.now(timezone(timedelta(hours=-3))).replace(tzinfo=None)
         if v < agora:
             raise ValueError("Não é possível agendar em datas passadas.")
         return v
